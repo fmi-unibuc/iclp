@@ -1,4 +1,4 @@
-package ro.unibuc.fmi.curs1;
+package ro.unibuc.fmi.iclp.curs1;
 
 public class HelloThread {
   public static void main(String args[]) {

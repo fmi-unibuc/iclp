@@ -1,4 +1,4 @@
-package ro.unibuc.fmi.curs1;
+package ro.unibuc.fmi.iclp.curs1;
 
 public class Container {
   static int c = 0;

@@ -1,4 +1,4 @@
-package ro.unibuc.fmi.curs1;
+package ro.unibuc.fmi.iclp.curs1;
 
 public class HelloRunnable implements Runnable {
   public void run() { System.out.println("Hello thread!"); }

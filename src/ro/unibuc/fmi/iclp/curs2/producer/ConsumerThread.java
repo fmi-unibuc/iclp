@@ -1,4 +1,4 @@
-package ro.unibuc.fmi.curs1.producer;
+package ro.unibuc.fmi.iclp.curs2.producer;
 
 import java.util.Optional;
 import java.util.function.Consumer;

@@ -1,4 +1,4 @@
-package ro.unibuc.fmi.curs1;
+package ro.unibuc.fmi.iclp.curs1;
 
 public class ThreadLocalId implements Runnable {
     private ThreadLocal<Long> threadLocal = new ThreadLocal<>();
