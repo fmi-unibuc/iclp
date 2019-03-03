@@ -3,17 +3,15 @@ package ro.unibuc.fmi.iclp.curs2.producer;
 import java.util.Optional;
 
 public class Cell<T> implements DropBox<T> {
-  private T message;
-  private boolean empty = true;
+  private T cell = null;
   private boolean open = true;
 
   @Override
   public synchronized boolean put(T message)
       throws InterruptedException {
-    while (!empty && open) wait(1000);
-    if (!empty) return false;
-    this.message = message;
-    empty = false;
+    while (open && cell != null) wait();
+    if (!open) return false;
+    cell = message;
     notifyAll();
     return true;
   }
@@ -21,16 +19,16 @@ public class Cell<T> implements DropBox<T> {
   @Override
   public synchronized Optional<T> take()
       throws InterruptedException {
-    while (empty && open) wait(1000);
-    if (empty) return  Optional.empty();
-    empty = true;
-    notifyAll();
-    return Optional.of(message);
+    while (open && cell == null) wait();
+    if (open) notifyAll();
+    T message = cell;
+    cell = null;
+    return Optional.ofNullable(message);
   }
 
   @Override
   public synchronized void close() {
-    open = false;
+    open = false; notifyAll();
   }
 
 }
