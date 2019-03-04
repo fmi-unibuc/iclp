@@ -13,6 +13,7 @@ public class Cell<T> implements DropBox<T> {
     if (!open) return false;
     cell = message;
     notifyAll();
+//    System.out.println(Thread.currentThread().getName() + " put " + message);
     return true;
   }
 

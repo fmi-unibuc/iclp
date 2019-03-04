@@ -14,15 +14,16 @@ public class Main {
     );
     Thread[] pt = new Thread[100];
     Thread[] ct = new Thread[100];
-    for (int i = 0; i < 100; i++) {
-      pt[i] = new Thread(p);
-      ct[i] = new Thread(c);
+    int threads = 100;
+    for (int i = 0; i < threads; i++) {
+      pt[i] = new Thread(p, "Producator " + i);
+      ct[i] = new Thread(c, "Consumator " + i);
       pt[i].start(); ct[i].start();
     }
-    for (int i = 0; i < 100; i++)
+    for (int i = 0; i < threads; i++)
       pt[i].join();
     box.close();
-    for (int i = 0; i < 100; i++)
+    for (int i = 0; i < threads; i++)
       ct[i].join();
     System.out.println("DONE");
   }

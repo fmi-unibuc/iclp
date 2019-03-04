@@ -16,8 +16,9 @@ public class ProducerThread<T> implements Runnable {
     Random rnd = new Random();
     try {
       for (T item : items) {
-        box.put(item);
         Thread.sleep(rnd.nextInt(2000));
+//        System.out.println(Thread.currentThread().getName() + " produced " + item);
+        box.put(item);
       }
     } catch (InterruptedException e) {
       System.err.println("Got interrupted!");
