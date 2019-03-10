@@ -1,11 +1,32 @@
 package ro.unibuc.fmi.iclp.curs2.producer;
 
 import java.util.Arrays;
+import java.util.Optional;
+import java.util.concurrent.ArrayBlockingQueue;
+import java.util.concurrent.BlockingQueue;
 
 public class Main {
 
   public static void main(String [] args) throws InterruptedException {
     DropBox<String> box = new Cell<>();
+    DropBox<String> box1 = new DropBox<String>() {
+      BlockingQueue<String> place = new ArrayBlockingQueue<>(1);
+      @Override
+      public boolean put(String message) throws InterruptedException {
+        place.put(message);
+        return true;
+      }
+
+      @Override
+      public Optional<String> take() throws InterruptedException {
+        return Optional.of(place.take());
+      }
+
+      @Override
+      public void close() throws InterruptedException {
+          place.put(null);
+      }
+    };
     ProducerThread<String> p = new ProducerThread<>(box,
         Arrays.asList("This", "is", "important"));
     ConsumerThread<String> c = new ConsumerThread<>(box, message ->
