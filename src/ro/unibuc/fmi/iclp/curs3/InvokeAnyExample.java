@@ -21,7 +21,7 @@ public class InvokeAnyExample {
     }
 
     int search2(Integer key) {
-        for (int i = 0; i < data.length; i++)
+        for (int i = data.length-1; i >= 0; i--)
             if (data[i].equals(key)) return i;
         return -1;
     }
@@ -31,7 +31,12 @@ public class InvokeAnyExample {
     }
 
     int search(Integer key) throws ExecutionException, InterruptedException {
-        return executor.invokeAny(Arrays.asList(() -> search1(key), () -> search2(key), () -> search3(key)));
+        return executor.invokeAny(Arrays.asList(
+                () -> search3(key),
+                () -> search1(key),
+                () -> search2(key)
+                )
+        );
     }
 
 }

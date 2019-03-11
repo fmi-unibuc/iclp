@@ -5,32 +5,32 @@ import java.util.concurrent.Semaphore;
 public class SemaphoreExample {
 
   static class Resource implements Runnable {
-    private Semaphore semaphore = new Semaphore(2);
+    private Semaphore semaphore = new Semaphore(3);
 
     @Override public void run() {
       try {
-//        System.out.println(
-//            Thread.currentThread().getName()
-//            + " requests resource.");
+        System.out.println(
+            Thread.currentThread().getName()
+            + " requests resource.");
         semaphore.acquire();
-//        System.out.println(
-//            Thread.currentThread().getName()
-//            + " acquired resource.");
+        System.out.println(
+            Thread.currentThread().getName()
+            + " acquired resource.");
         try {
           for (int i = 0; i < 3; i++) {
-//            System.out.println(
-//                Thread.currentThread().getName() +
-//                ": performs operation " + i);
+            System.out.println(
+                Thread.currentThread().getName() +
+                ": performs operation " + i);
             Thread.sleep(1000);
           }
         } finally {
-//          System.out.println(
-//            Thread.currentThread().getName()
-//            + " releases resource.");
+          System.out.println(
+            Thread.currentThread().getName()
+            + " releases resource.");
           semaphore.release();
         }
       } catch (InterruptedException e) {
-//        System.out.println("Got interrupted!");
+        System.out.println("Got interrupted!");
       }
     }
   }

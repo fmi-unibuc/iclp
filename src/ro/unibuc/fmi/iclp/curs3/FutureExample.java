@@ -32,7 +32,6 @@ public class FutureExample {
 
     interface Expression {
         Callable<BigInteger> evaluate();
-
     }
 
     static class Number implements Expression {
@@ -87,6 +86,7 @@ public class FutureExample {
                 break;
             case '*':
                 op = BigInteger::multiply;
+                break;
             case '/':
                 op = BigInteger::divide;
                 break;

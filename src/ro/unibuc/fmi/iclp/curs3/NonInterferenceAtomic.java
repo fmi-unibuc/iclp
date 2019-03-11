@@ -12,6 +12,6 @@ public class NonInterferenceAtomic {
     myThread.start();
     for (int x = 0; x < 5000; ++x) c.decrementAndGet();
     myThread.join();
-    System.out.println("c = " + c);
+    System.out.println("c = " + c.get());
   }
 }
