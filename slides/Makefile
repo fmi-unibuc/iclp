@@ -1,9 +1,9 @@
-all: c1-java1.pdf c2-java2.pdf
+all: c1-java1.pdf c2-java2.pdf c3-java3.pdf
 
 %.pdf: %.md
 	pandoc $< -o $@ -s -t beamer -V theme:CambridgeUS -V colortheme:crane
 
 clean:
-	rm c1-java1.pdf c2-java2.pdf
+	rm c1-java1.pdf c2-java2.pdf c3-java3.pdf
 
 .PHONY: all clean
