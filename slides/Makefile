@@ -1,9 +1,11 @@
-all: c1-java1.pdf c2-java2.pdf c3-java3.pdf
+objects := $(patsubst %.md,%.pdf,$(wildcard *.md))
+
+all: $(objects)
 
 %.pdf: %.md
 	pandoc $< -o $@ -s -t beamer -V theme:CambridgeUS -V colortheme:crane
 
 clean:
-	rm c1-java1.pdf c2-java2.pdf c3-java3.pdf
+	-rm $(objects)
 
 .PHONY: all clean
