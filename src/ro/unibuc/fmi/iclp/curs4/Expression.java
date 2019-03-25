@@ -7,11 +7,14 @@ import java.util.function.BinaryOperator;
 
 abstract class Expression extends RecursiveTask<BigInteger> {
     static class Number extends Expression {
-        BigInteger value;
-        Number(long x) { value = BigInteger.valueOf(x); }
+        long value;
+        Number(long x) { value = x; }
 
         @Override
-        public BigInteger compute() { return value; }
+        public BigInteger compute() {
+//            if (value == 10) throw new UnsupportedOperationException("zece!");
+            return BigInteger.valueOf(value);
+        }
     }
 
     public static class Binary extends Expression {
@@ -67,6 +70,10 @@ abstract class Expression extends RecursiveTask<BigInteger> {
 
     public static void main(String[] args) {
         Expression e = parse(args[0]);
-        System.out.println("Value: " + e.invoke());
+        try {
+            System.out.println("Value: " + e.invoke());
+        } catch (Exception ex) {
+            System.out.println("Exceptie la executie: " + ex.getMessage());
+        }
     }
 }
