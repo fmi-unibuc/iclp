@@ -4,7 +4,7 @@ import           Data.IORef
 
 work :: IORef a -> (a -> a) -> IO ()
 work ref f = do
-    replicateM_ 580000
+    replicateM_ 5800000
         (atomicModifyIORef' ref (\x -> (f x, ())))
     putStrLn "done"
 

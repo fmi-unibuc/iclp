@@ -3,7 +3,7 @@ import           Control.Concurrent
 printChars :: [Char] -> IO ()
 printChars chars
   = do
-    mapM_ putChar chars
+    mapM_ print chars
     putChar '\n'
 
 main :: IO ()

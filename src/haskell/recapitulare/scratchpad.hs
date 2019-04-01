@@ -40,3 +40,60 @@ egal x y
   | x == y = True
 egal x y = False
 
+{-
+data Either a b = Left a | Right b
+
+instance Functor (Either a) where
+  fmap f (Right x)  = Right (f x)
+  fmap f (Left err) = Left err
+-}
+
+
+helloWorld :: IO ()
+helloWorld = putStrLn "Hello, World!"
+
+myIOTest :: IO ()
+myIOTest = do
+    x <- fmap length getLine
+    print x
+    myIOTest
+
+actiune :: IO Integer
+actiune = do
+    line <- getLine
+    let r = read line :: Integer
+    return r
+
+main :: IO ()
+main = do
+    val <- actiune
+    let val' = val * val
+    print val'
+    main
+
+
+class Functor f where
+    fmap :: (a -> b) -> f a -> f b
+    fmap f ma = do
+        a <- ma
+        return (f a)
+
+class Functor f => Applicative f where
+    pure :: a -> f a  -- return
+    pure = return
+    (<*>) :: f (a -> b) -> f a -> f b
+    mf <*> ma = do
+        f <- mf
+        a <- ma
+        return (f a)
+    mf <*> ma = do
+        a <- ma
+        f <- mf
+        return (f a)
+
+
+class Applicative m => Monad m where
+    return :: a -> m a -- pure
+    (>>=) :: f a -> (a -> f b) -> f b
+
+

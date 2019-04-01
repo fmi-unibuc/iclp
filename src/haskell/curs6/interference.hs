@@ -3,7 +3,7 @@ import           Control.Monad      (replicateM_)
 import           Data.IORef
 
 work :: IORef a -> (a -> a) -> IO ()
-work ref f = do replicateM_ 580000 (modifyIORef' ref f)
+work ref f = do replicateM_ 500000 (modifyIORef' ref f)
                 putStrLn "done"
 
 main :: IO ()
