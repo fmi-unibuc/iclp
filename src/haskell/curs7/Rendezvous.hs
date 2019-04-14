@@ -7,7 +7,10 @@ data Rendezvous a b =
     Rendezvous { left :: Channel a, right :: Channel b }
 
 newRendezvous :: IO (Rendezvous a b)
-newRendezvous = Rendezvous <$> newChannel <*> newChannel
+newRendezvous = do
+    lChan <- newChannel
+    rChan <- newChannel
+    return $ Rendezvous lChan rChan
 
 exchange :: Channel a -> Channel b -> a -> IO b
 exchange channelA channelB a = do   send channelA a

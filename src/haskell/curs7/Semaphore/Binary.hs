@@ -2,13 +2,13 @@ module Semaphore.Binary (Semaphore, newSemaphore, acquire, release) where
 
 import           Control.Concurrent
 
-newtype Semaphore = Semaphore { getMVar :: MVar () }
+newtype Semaphore = Semaphore { getSemaphore :: MVar () }
 
 newSemaphore :: IO Semaphore
 newSemaphore = Semaphore <$> newMVar ()
 
 acquire :: Semaphore -> IO ()
-acquire = takeMVar . getMVar
+acquire s = takeMVar (getSemaphore s)
 
 release :: Semaphore -> IO ()
-release = takeMVar . getMVar
+release s = putMVar (getSemaphore s) ()
