@@ -1,4 +1,4 @@
-module Channel (Channel, newChannel, send, receive) where
+module Curs7.Channel (Channel, newChannel, send, receive) where
 
 import           Control.Concurrent
 

@@ -1,7 +1,7 @@
-module BlockingChannel (BlockingChannel) where
+module Curs7.BlockingChannel (BlockingChannel) where
 
-import           Channel
 import           Control.Concurrent
+import           Curs7.Channel
 
 newtype BlockingChannel a = BlockingChannel { getChannel :: MVar a }
 

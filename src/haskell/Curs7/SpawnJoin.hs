@@ -1,7 +1,7 @@
-module SpawnJoin (TId, spawn, join) where
-import           BlockingChannel
-import           Channel
+module Curs7.SpawnJoin (TId, spawn, join) where
 import           Control.Concurrent
+import           Curs7.BlockingChannel
+import           Curs7.Channel
 
 newtype TId = TId (BlockingChannel ())
 

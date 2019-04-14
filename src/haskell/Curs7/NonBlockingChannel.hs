@@ -1,7 +1,7 @@
-module NonBlockingChannel (NonBlockingChannel) where
+module Curs7.NonBlockingChannel (NonBlockingChannel) where
 
-import           Channel
 import           Control.Concurrent
+import           Curs7.Channel
 
 type Stream a = MVar (Item a)
 
