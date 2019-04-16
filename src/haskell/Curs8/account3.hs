@@ -6,8 +6,6 @@ import           Control.Concurrent
 import           Control.Concurrent.STM
 import qualified Control.Monad          as Monad
 
-import           System.IO.Unsafe       (unsafePerformIO)
-
 data Account = Account
     { getAccount :: TVar Int
     , getName    :: String
@@ -43,16 +41,24 @@ transfer account1 account2 amount = do
     withdraw account1 amount
     deposit account2 amount
 
+transferFrom2 :: Account -> Account -> Account -> Int -> STM ()
+transferFrom2 from1 from2 to amount = do
+    withdraw from1 amount `orElse` withdraw from2 amount
+    deposit to amount
+
 main :: IO ()
 main = do
     janeAcc <- createAccount "Jane Doe" 1000
-    johnAcc <- createAccount "John Smith" 1000
-    tid1 <- spawn (trans janeAcc johnAcc 1400)
-    tid2 <- spawn (threadDelay (10^6) >> trans johnAcc janeAcc 500)
+    john1Acc <- createAccount "John Smith 1" 500
+    john2Acc <- createAccount "John Smith 2" 500
+    tid1 <- spawn (trans janeAcc john1Acc 1400)
+    tid2 <- spawn (trans2 john1Acc john2Acc janeAcc 600)
+    tid1 <- spawn (threadDelay (10*10^6) >> trans janeAcc john2Acc 100)
     forkIO (Monad.forever $
         do
         threadDelay (11^5)
-        showBalance johnAcc
+        showBalance john1Acc
+        showBalance john2Acc
         )
     forkIO (Monad.forever $
         do
@@ -62,6 +68,8 @@ main = do
     join tid1
     join tid2
     showBalance janeAcc
-    showBalance johnAcc
+    showBalance john1Acc
+    showBalance john2Acc
   where trans a1 a2 s = atomically $ transfer a1 a2 s
+        trans2 a1 a2 a3 s = atomically $ transferFrom2 a1 a2 a3 s
 

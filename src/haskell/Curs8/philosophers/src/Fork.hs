@@ -17,4 +17,3 @@ takeFork (Fork fork) = do
 releaseFork :: Fork -> STM ()
 releaseFork (Fork fork) = writeTVar fork True
 
-

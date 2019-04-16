@@ -6,8 +6,6 @@ import           Control.Concurrent
 import           Control.Concurrent.STM
 import qualified Control.Monad          as Monad
 
-import           System.IO.Unsafe       (unsafePerformIO)
-
 data Account = Account
     { getAccount :: TVar Int
     , getName    :: String
@@ -29,10 +27,9 @@ deposit account amount = do
 withdraw :: Account -> Int -> STM Bool
 withdraw account amount = do
     x <- readTVar acct
-    if x > amount   then do writeTVar acct (x - amount)
+    if x >= amount  then do writeTVar acct (x - amount)
                             return True
-                    else do writeTVar acct x
-                            return False
+                    else return False
   where acct = getAccount account
 
 showBalance :: Account -> IO ()
@@ -66,5 +63,5 @@ main = do
     join tid2
     showBalance janeAcc
     showBalance johnAcc
-  where trans a1 a2 s = atomically $ Monad.void $ transfer a1 a2 s
+  where trans a1 a2 s = Monad.void $ atomically $ transfer a1 a2 s
 

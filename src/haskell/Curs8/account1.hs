@@ -26,7 +26,7 @@ deposit account amount = do
 withdraw :: Account -> Int -> IO Bool
 withdraw account amount = do
     x <- takeMVar acct
-    if x > amount   then do putMVar acct (x - amount)
+    if x >= amount  then do putMVar acct (x - amount)
                             return True
                     else do putMVar acct x
                             return False
@@ -40,7 +40,7 @@ showBalance (Account acct name) = do
 transfer :: Account -> Account -> Int -> IO Bool
 transfer account1 account2 amount = do
     b <- withdraw account1 amount
-    --threadDelay $ amount * 10^3
+    threadDelay $ amount * 10^3
     Monad.when b (deposit account2 amount)
     return b
 
@@ -64,14 +64,14 @@ main = do
     join tid2
     showBalance janeAcc
     showBalance johnAcc
-  where trans = transfer
+  where trans = transfer2
 
 transfer2 :: Account -> Account -> Int -> IO Bool
 transfer2 account1 account2 amount = do
     y <- takeMVar acct2
-    --threadDelay $ amount * 10^3
+    -- threadDelay $ amount * 10^3
     x <- takeMVar acct1
-    if x > amount   then do putMVar acct1 (x - amount)
+    if x >= amount  then do putMVar acct1 (x - amount)
                             putMVar acct2 (y + amount)
                             return True
                     else do putMVar acct1 x
