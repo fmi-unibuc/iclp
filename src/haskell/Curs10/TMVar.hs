@@ -16,7 +16,7 @@ takeTMVar (TMVar t) = do
     case mx of
         Nothing -> retry
         Just x -> do
-            writeTVar t Noting
+            writeTVar t Nothing
             return x
 
 putTMVar :: TMVar a -> a -> STM ()

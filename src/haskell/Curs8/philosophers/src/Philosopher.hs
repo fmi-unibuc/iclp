@@ -16,15 +16,16 @@ data Philosopher = Philosopher
 newPhilosopher :: String -> Fork -> Fork -> Philosopher
 newPhilosopher = Philosopher
 
-runPhilosopher :: Philosopher -> IO ()
-runPhilosopher (Philosopher name left right) = Monad.forever $ do
+runPhilosopher :: Int -> Philosopher -> IO ()
+runPhilosopher n (Philosopher name left right) = Monad.replicateM_ n $ do
     delay <- randomRIO (1,10)
     threadDelay (delay * 10^6)
     putStrLn (name ++ " is hungry.")
-    atomically $ do { takeFork left ; takeFork right }
-    putStrLn (name ++ " got two forks and is now eating.")
+    (f1, f2) <- atomically $ do
+        { f1 <- takeFork left ; f2 <- takeFork right ; return (f1,f2) }
+    putStrLn (name ++ " got forks " ++ show f1 ++ " and " ++ show f2 ++ " and is now eating.")
     delay <- randomRIO (1,10)
     threadDelay (delay * 10^6)
     putStrLn (name ++ " is done eating. Going back to thinking.")
-    atomically $ do { releaseFork left ; releaseFork right }
+    atomically $ do { releaseFork left f2 ; releaseFork right f1 }
 
