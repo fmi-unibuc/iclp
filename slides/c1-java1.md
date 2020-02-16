@@ -1,11 +1,207 @@
 ---
 title: Implementarea Concurenței în limbaje de programare
-subtitle: JAVA
+subtitle: Fire de execuție și memorie partajată --- JAVA
 author: Traian Florin Șerbănuță
 institute: FMI @ UNIBUC
-thanks: Bazat pe cursul ținut de dna. prof. Ioana Leuștean
 abstract: |
 ---
+
+# Fire de execuție și memorie partajată
+
+## Fire de execuție (threads)
+
+- Marea majoritate a aplicațiilor moderne folosește mai multe fire de execuție
+- Părți diferite ale aplicației pot fi gestionate de fire de execuție diferite
+  - actualizarea informațiilor pe ecran
+  - încărcarea datelor de pe disc
+  - verificarea ortografiei
+  - procesarea cererilor venite din rețea
+- Pot simplifica codul, pot oferi senzația de «responsiveness»
+
+
+## Exemplu (Arhitectura unui server)
+
+![](images/server.png)
+
+## Beneficii
+
+- Responsiveness --- poate continua execuția și când parte a procesului e blocată
+  - aspect crucial pentru intefețe utilizator
+- Partajarea folosirii resurselor
+- Scalabilitate --- în cazul arhitecturilor multi-procesor.
+
+## Concurență vs. Paralelism
+
+### Execuție concurentă pe un sistem single-core:
+
+![](images/single-core.png)
+
+### Execuție concurentă în paralel pe un sistem multi-core:
+
+![](images/multi-core.png)
+
+## Aplicație non-concurentă vs. aplicație concurentă
+
+![](images/multi-threaded.png)
+
+## Memorie partajată
+
+### Beneficii
+
+- Eficiență: toate firele au access direct la memorie
+- Model simplu: accesarea memoriei partajate se face la fel
+
+### Probleme (Necesitatea sincronizării)
+- Firele de execuție pot fi întrerupte oricând
+  - de exemplu, în mijlocul unei operații importante
+- Accesul concurent la date partajate poate genera inconsistență
+- Menținerea consistenței datelor necesită mecanisme pentru a 
+  asigura bunul comportament al proceselor cooperante
+
+## Sincronizare -- Mutex (EXcludere MUTuală)
+
+- Obiect special de sincronizare
+
+- protejează o zonă de cod (sensibilă la modificări concurente)
+- două zone protejate de același mutex nu se pot intrerupe una 
+  pe alta
+
+
+### Exemplu - mutex m
+
+
++-------------------+------------------+ 
+|First Thread       | Second Thread    | 
++===================+==================+ 
+|```                | ```              | 
+|do stuff           | do stuff         | 
+|synchronized(m):   | synchronized(m): | 
+|   output results  |   output results | 
+|do other stuff     | do other stuff   | 
+|```                | ```              | 
++-------------------+------------------+ 
+
+# Consistență secvențială (Java memory model)
+
+## Obiecte concurente și specificație serială
+
+### Obiecte concurente
+
+Entități care exportă anumite operații ce pot fi efectuate asupra lor de un thread.
+
+### Specificație serială
+
+Comportamentul valid al unui obiect concurent în izolare
+    
+    * dacă ne uităm doar la operațiile efectuate asupra lui
+
+## Exemplu de obiect concurent: o locație de memorie
+
+### Operații
+
+read
+
+: Citirea valorii de la locația de memorie
+
+write
+
+: Scrierea unei valori la acea locație
+
+### Specificația serială
+
+Fiecare operație de citire întoarce valoarea scrisă de cea mai recentă operație de scriere.
+
+
+## Exemplu de obiect concurent: mutex (lock)
+
+### Operații
+
+lock
+
+: obținerea lacătului
+
+unlock
+
+: eliberarea lacătului
+
+### Specificația serială
+
+* `#lock - #unlock` este fie `0` fie `1` 
+    * secvență de perechi `lock unlock`
+    * ultimul `unlock` poate lipsi
+* operațiile consecutive lock - unlock efectuate de același thread
+
+
+## Exemplu de obiect concurent: semafor cu `n` resurse inițiale
+
+### Operații
+
+acquire
+
+: achiziționarea unei resurse
+
+release
+
+: eliberarea unei resurse
+
+### Specificația serială
+
+In orice moment `n + #release - #acquire >= 0`
+  * nu pot obține mai multe resurse decât disponibile
+
+## Definirea consistenței secvențiale [Attiya&Welch, 1994]
+
+### Execuție legală
+
+Restricția execuției la orice obiect concurent satisface specificația sa serială
+
+### Reordonarea unei execuții
+
+Restricția execuției reordonate la orice fir de execuție e aceeași ca în execuția originală
+
+### Execuție secvențial consistentă
+
+O execuție care admite o *reordonare legală*
+
+### Garanții oferite de consistența secvențială
+
+* Execuția are loc *ca și cum* ar fi legală.
+
+* Programatorul poate presupune că fiecare obiect concurent se comportă comform specificației sale seriale.
+
+## Modelul de memorie al limbajului Java
+
+* Program *corect sincronizat* => execuții secvențial consistente
+* Program corect sincronizat <= fără *data-races*
+* Data-race <= *accesări conflictuale* neordonate de relația *happens-before*
+* Două accesări ale aceleiași locatii de memorie sunt conflictuale dacă una din ele este de scriere.
+
+### Relația Happens-before  hb(x,y)
+
+**Ordinea în thread**
+
+: x înaintea lui y în același thread => hb(x,y)
+
+**Sincronizare**
+
+: x *se sincronizează* cu acțiunea ulterioară y => hb(x,y)
+
+**Tranzitivitate**
+
+: hb(x,y) și hb(y,z) => hb(x,z)
+
+**Constructor-Finalizer**
+
+: Dacă x e sfărșitul execuției unui constructor și y e apelul metodei `finalize` pentru acel obiect => hb(x,y)
+
+## Ordinea de sincronizare
+
+* Operația unlock asupra unui monitor `m` se sincronizeaza cu orice lock ulterior asupra lui `m`
+* Operația write asupra unei variabile `volatile`{.java} `v` se sincronizează cu operatiile ulterioare read aasupra lui v
+* Operația de pornire a unui thread se sincronizează cu prima operatie din acel thread.
+* Ultima operație dintr-un thread se sincronizează cu orice operație care detectează ca thread-ul s-a terminat
+
+
 
 # Primitive pentru concurență în Java
 

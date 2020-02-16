@@ -88,12 +88,12 @@ Programming, 2002
 
 (Gonzalez, Javier Fernandez. Java 9 Concurrency Cookbook - Second Edition, 2017)
 
-## Concurrency and parallelism (picture) [^1]
+## Concurrency and parallelism (picture) [^concPar]
 
 
 ![](https://i.stack.imgur.com/mUlNV.jpg)
 
-[^1]: Introduction to Concurrency in Programming Languages
+[^concPar]: Introduction to Concurrency in Programming Languages
     Matthew J. Sottile, Timothy G. Mattson, Craig E Rasmussen
     CRC Press, Sep 28, 2009
 
