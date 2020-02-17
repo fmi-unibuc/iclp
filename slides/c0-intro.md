@@ -3,7 +3,6 @@ title: Implementarea Concurenței în limbaje de programare
 subtitle: Introducere
 author: Traian Florin Șerbănuță
 institute: FMI @ UNIBUC
-thanks: Bazat pe cursul ținut de dna. prof. Ioana Leuștean
 abstract: |
 ---
 
