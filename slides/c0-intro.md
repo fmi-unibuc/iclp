@@ -1,45 +1,27 @@
 ---
 title: Implementarea Concurenței în limbaje de programare
-subtitle: Introducere
+subtitle: Intro
 author: Traian Florin Șerbănuță
 institute: FMI @ UNIBUC
 abstract: |
 ---
 
-# Motivație
+# Motivation
 
-## Dining Philosophers Problem [Dijkstra 1965, Hoare 1985]\ [^philCitation]
-
-\small
-> In ancient times, a wealthy philanthropist endowed a College to accommodate
-> five eminent philosophers.
-> Each philosopher had a room in which he could engage in his professional
-> activity of thinking; there was also a common dining room, furnished with a
-> circular table, surrounded by five chairs, each labelled by the name of the
-> philosopher who was to sit in it.
-> They sat anticlockwise around the table.
-> To the left of each philosopher there was laid a golden fork, and in the centre
-> stood a large bowl of spaghetti, which was constantly replenished.
-> A philosopher was expected to spend most of his time thinking; but when he felt
-> hungry, he went to the dining room, sat down in his own chair, picked up his
-> own fork on his left, and plunged it into the spaghetti.
-> But such is the tangled nature of spaghetti that a second fork is required to
-> carry it to the mouth.
-> The philosopher therefore had also to pick up the fork on his right.
-> When we was finished he would put down both his forks, get up from his chair,
-> and continue thinking.
-> Of course, a fork can be used by only one philosopher at a time.
-> If the other philosopher wants it, he just has to wait until the fork is
-> available again.
-
-[^philCitation]: See also: C.A.R. Hoare, Communicating Sequential Processes, 2004
+## Dining Philosophers Problem\ [^philCitation]
 
 
-## Dinining Philosophers Problem (picture) [^phil]
+> Five philosophers, numbered from 0 through 4 are living in a house where the
+> table [is] laid for them, each philosopher having his own place at the table:
 
-![](https://upload.wikimedia.org/wikipedia/commons/thumb/7/7b/An_illustration_of_the_dining_philosophers_problem.png/578px-An_illustration_of_the_dining_philosophers_problem.png){ height=75% }
+> ![](http://www.cs.utexas.edu/users/EWD/transcriptions/EWD03xx/EWD310_img_51.jpg){ height=30% }
+> Their only problem —besides those of philosophy— is that the dish served is
+> a very difficult kind of spaghetti, that has to be eaten with two forks.
+> There are two forks next to each plate, so that presents no difficulty:
+> as a consequence, however, no two neighbours may be eating simultaneously.
 
-[^phil]: Source: Wikipedia
+[^philCitation]: [Hierarchical ordering of sequential processes](http://www.cs.utexas.edu/users/EWD/index03xx.html), EW Dijsktra, 1971
+
 
 ## The essence of concurrency [^essenceCitation]
 
@@ -68,25 +50,6 @@ Programming, 2002
 
 [^essence]: Source: [drive-development.com](http://drive-development.com)
 
-## Concurrency and parallelism
-
-> In the computer world, when we talk about concurrency, we refer to a series of
-> independent and unrelated tasks that run simultaneously on a computer.
-> This simultaneity can be real if the computer has more than one processor or a
-> multi-core processor, or it can be apparent if the computer has only one core
-> processor.
-> 
-> Another concept related to concurrency is parallelism.
-> There are different definitions and relations with the concurrency concept.
-> Some authors talk about concurrency when you execute your application with
-> multiple threads in a single-core processor.
-> With this, you can see when your program execution is apparent.
-> They talk about parallelism when you execute your application with multiple
-> threads in a multi-core processor or in a computer with more than one
-> processor.
-
-(Gonzalez, Javier Fernandez. Java 9 Concurrency Cookbook - Second Edition, 2017)
-
 ## Concurrency and parallelism (picture) [^concPar]
 
 
@@ -97,62 +60,62 @@ Programming, 2002
     CRC Press, Sep 28, 2009
 
 
-## Programarea aplicațiilor concurente
+## Concurrent programming concepts
 
-- Programele concurente descriu comportamente cu multe interacțiuni:
-  + între utilizatorii aceleiași interfețe,
-  + intre subsistemele aceluiași sistem,
-  + între sisteme diferite.
+- Concurrent programs describe interactive behaviors
+  + between the users of the same API
+  + between subsistems of the same system
+  + between different systems
 
 
-- Scrise în limbaje de programare care oferă
-  primitive pentru realizarea acestor interacțiuni.
+- Programming languages offer primitives for achieving this level of interaction
 
-- Comportament independent de sistemul de operare.
-  + Dar, totuși, sistemul de operare poate oferi suport pentru obținerea acestui comportament.
+- Behavior should be independent of the operating system
+  + However, the OS may offer support for achieving the behavior.
 
-## Modele de concurență (plan de curs)
+## Course
 
-- Fire de execuție și memorie partajată
-  + în limbajul Java (3 săptămâni)
-- Memorie tranzactională (STM)
-  + în limbajul C++ (1 saptămână)
-- Actori și comunicare bazată pe mesaje
-  + în limbajele Erlang/Elixir (4 săptămâni)
-- Apeluri asincrone (Futures)
-  + în limbajele Javascript/Python (2 săptămâni)
-- Programare bazată pe evenimente 
-  + în limbajul Javascript (1 saptămână)
-- Alte limbaje/paradigme (prezentările voastre)
+- Lecturer: Traian Șerbănuță (traian.serbanuta at unibuc.ro)
 
-## Laborator (dl. Adrian Budău)
+### Timeline
+- Threads and shared memory (using Java, 3 weeks)
+  + Software transactional memory (using C++, 1 week)
+- The actor model (using Erlang/Elixir, 4 weeks)
+- Asynchronous calls (using Javascript/Python, 2 weeks)
+  - Event based programming (using Javascript, 1 week)
 
-- Exerciții pentru aprofundarea noțiunilor discutate la curs
-- Teme pentru acasă (fiecare temă valoareaza 20 de puncte)
-  + Vor fi 3 teme, acoperind cele 3 mari teme discutate la curs
-  + Termenul de predare al unei teme: 4 săptămâni
-  + Temele trebuie prezentate în persoană
-  + Fiecare zi (lucrătoare) de întârziere se penalizează cu 1 punct
+## Lab
 
-## Proiect (valorează 40 de puncte)
+- Lab facilitator: Adrian Budău (budau.adi at gmail.com)
 
-+ Proiectele sunt individuale
-+ Vor consta în 
-   realizarea unei aplicații mai complexe care să folosească
-    mai multe din modelele discutate la curs
-+ __SAU__ într-un proiect de cercetare:
-  * alegerea unei teme/articol de cercetare din listă (sau cu aprobare)
-  * înțelegerea temei și realizarea unei prezentări și a unui demo
-  * susținerea temei în cadrul unuia dintre cursurile finale
-  * număr limitat
-+ Proiectul trebuie ales până la vacanța de Paște
-+ Termen predare: data examenului din sesiune
-  * predarea mai devreme e binevenită și încurajată
+### Lab assignments
+- Three assignments, covering the three main topics discussed
+  + Each assignment accounts for 20 points
+- Duration of an assignment: 4 weeks since it is posted.
+- Assitance will be provided during lab hours
+- Must be delivered and defended in-person during lab hours
+- Delayed submission: *5 points of penalty for every week*
 
-## Condiții de promovabilitate 
+## Project (40 points)
 
-- Nota finală = (NotaProiect + suma(noteTeme))/10
-- Nota de trecere: 5
-- Nota se rotunjește doar dacă este mai mare decât 5
-  * i.e., nota 4,9 nu este notă de trecere
++ Projects are individual
++ Deadline for choosing a project: before the Easter holiday
+
+### Two avenues to success :-)
+1. Building a more complex application
+   - using more than one of the concurrency models discussed
+   - Deadline: in session, by exam date
+   - Early submissions are welcomed and appreciated
+2. Research (for the more theoretically inclined)
+   * Choosing a concurrency research paper (ask me for guidance)
+   * Understanding the theme, creating a presentation and a demo
+   * Presenting the findings to your peers during final classes
+   * Deadline for submitting: *May 23* 
+
+## Grading
+
+- Final grade = (ProjectScore + sum(assignmentScores))/10
+- Passing grade: 5
+  * 4.9 is not a passing grade
+- Passing grades will be rounded to the nearest whole number
 

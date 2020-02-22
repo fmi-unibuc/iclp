@@ -1,41 +1,42 @@
 ---
 title: Implementarea Concurenței în limbaje de programare
-subtitle: Fire de execuție și memorie partajată --- JAVA
+subtitle: Threads and shared memory --- JAVA
 author: Traian Florin Șerbănuță
 institute: FMI @ UNIBUC
 abstract: |
 ---
 
-# Fire de execuție și memorie partajată [^osBook]
+# Threads and shared memory [^osBook]
 
 [^osBook]: [Operating Systems Concepts, 9th edition, by A. Silberschatz, P. B. Galvin, and G. Gagne](https://codex.cs.yale.edu/avi/os-book/OS9/index.html)
 
 
-## Fire de execuție (threads)
+## Threads
 
-- Majoritatea aplicațiilor moderne folosesc mai multe fire de execuție
-- Părți diferite ale aplicației pot fi gestionate de fire de execuție diferite
-  - actualizarea informațiilor pe ecran
-  - încărcarea datelor de pe disc
-  - verificarea ortografiei
-  - procesarea cererilor venite din rețea
-- Pot simplifica codul, pot oferi senzația de «responsiveness»
+* Most modern applications are multithreaded
+* Multiple tasks with the application can be implemented by separate threads
+  * Update display
+  * Fetch data
+  * Spell checking
+  * Answer a network request
+* Can simplify code, increase responsiveness
 
-
-## Exemplu (Arhitectura unui server)
+## Example (Service Server Arhitecture)
 
 ![](images/server.png)
 
-## Beneficii
+## Benefits
 
-- Responsiveness --- poate continua execuția și când parte a procesului e blocată
-  - aspect crucial pentru intefețe utilizator
-- Partajarea folosirii resurselor
-- Scalabilitate --- în cazul arhitecturilor multi-procesor.
+- *Responsiveness*
+  + may allow continued execution if part of process is blocked
+  + especially important for user interfaces
+- *Resource Sharing*
+- *Scalability*
+  + process can take advantage of multiprocessor architectures
 
-## Concurență vs. Paralelism
+## Concurrency vs parallelism
 
-### Execuție concurentă pe un sistem single-core:
+### Concurrent execution on single-core system:
 
 ![](images/single-core.png)
 
@@ -43,96 +44,100 @@ abstract: |
 
 ![](images/multi-core.png)
 
-## Aplicație non-concurentă vs. aplicație concurentă
+## Single vs Multithreaded process
 
 ![](images/multi-threaded.png)
 
-## Memorie partajată
+## Shared Memory
 
-### Beneficii
+### Benefits
 
-- Eficiență: toate firele au access direct la memorie
-- Model simplu: accesarea memoriei partajate se face la fel
+- Efficiency: all threads have direct acecss to the memory
+- Simplicity: Accessing shared memory using same model as for sequential processes
 
-### Probleme (Necesitatea sincronizării)
-- Firele de execuție pot fi întrerupte oricând
-  - de exemplu, în mijlocul unei operații importante
-- Accesul concurent la date partajate poate genera inconsistență
-- Menținerea consistenței datelor necesită mecanisme pentru a 
-  asigura bunul comportament al proceselor cooperante
+### Problems (the need for synchronization)
+- Threads may be interruped at any time
+  - e.g., while performing a data-sensitive operation
+- Concurrent access to shared data may result in data inconsistency
+- Maintaining data consistency requires mechanisms to ensure the orderly execution of cooperating threads
 
-## Sincronizare -- Mutex (EXcludere MUTuală)
+## Synchronization -- Mutex (MUTual EXclusion)
 
-- Obiect special de sincronizare
+- Special synchronization object
 
-- protejează o zonă de cod (sensibilă la modificări concurente)
-- două zone protejate de același mutex nu se pot intrerupe una 
-  pe alta
+- Protects a "critical section" of code
+  - (sensitive to concurrent modifications)
 
-
-### Exemplu - mutex m
+- Two zones protected by same mutex cannot interrupt each-other
 
 
-+-------------------+------------------+ 
-|First Thread       | Second Thread    | 
-+===================+==================+ 
-|```                | ```              | 
-|do stuff           | do stuff         | 
-|synchronized(m):   | synchronized(m): | 
-|   output results  |   output results | 
-|do other stuff     | do other stuff   | 
-|```                | ```              | 
-+-------------------+------------------+ 
+### Example - mutex m
 
 
-# Primitive pentru concurență în Java
++-----------------------+-----------------------+ 
+|First Thread           | Second Thread         | 
++=======================+=======================+ 
+|```                    | ```                   | 
+|do stuff               | do stuff              | 
+|synchronized(m):       | synchronized(m):      | 
+|   output results      |   output results      | 
+|do other stuff         | do other stuff        | 
+|```                    | ```                   | 
++-----------------------+-----------------------+ 
 
-## Fire de execuție (Threads)
 
-Orice fir de execuție este instanță a clasei `Thread`{.java}
+# Concurrency primitives in Java
 
-### Atributele unui thread
+## Threads
 
-- __ID__: identificatorul thread-ului, unic pentru fiecare thread
-    - este accesat cu `getId`{.java}, nu poate fi modificat
+Any executing thread is an instance of class `Thread`{.java} 
+
+### Thread attributes
+
+- __ID__: unique thread identifier
+    - getter: `getId`{.java}, cannot be set
             
-- __Name__: numele thread-ului (`String`{.java})
-    - este accesat cu: `getName`{.java}, `setName`{.java}
+- __Name__: thread name (`String`{.java})
+    - getter/setter: `getName`{.java}, `setName`{.java}
 
-- __Priority__: prioritatea thread-ului (un număr între 1 și 10)  
-    - este accesată cu: `getPriority`{.java}, `setPriority`{.java}
-    - în principiu thread-urile cu prioritate mai mare sunt executate primele
-    - setarea priorității nu oferă garanții în privința execuției 
+- __Priority__: thread priority (integer between 1 and 10)
+    - getter/setter: `getPriority`{.java}, `setPriority`{.java}
+    - Larger number usually means greater execution priority
+    - changing priority does not guarantee actual priority 
 
-- __Status__: starea thread-ului
-    - este accesat cu `getState`{.java}
-    - nu poate fi modificat direct (e.g. nu există `setState`)
+- __State__: Thread state
+    - getter: `getState`{.java}, cannot be set
 
-## [Starea thread-ului](https://docs.oracle.com/javase/7/docs/api/java/lang/Thread.State.html)
+## [Thread state](https://docs.oracle.com/javase/7/docs/api/java/lang/Thread.State.html)
 
 `public static enum Thread.State extends Enum<Thread.State>`{.java}
 
-- __`NEW`__: încă nu a fost pornit
-- __`RUNNABLE`__: în curs de execuție
-- __`BLOCKED`__: blocat, așteptând achiziționarea unui lock
-- __`WAITING`__: așteaptă (nedefinit de mult) un semnal de la un alt thread
-- __`TIMED_WAITING`__: așteaptă (o perioadă determinată) un semnat de la un alt thread
-- __`TERMINATED`__: după finalizarea execuției
+- __`NEW`__: thread which has not yet started.
+- __`RUNNABLE`__: thread which can execute/is executing
+- __`BLOCKED`__:  blocked, waiting for a monitor lock
+- __`WAITING`__: waiting for a signal from another thread
+- __`TIMED_WAITING`__: waiting thread with a specified waiting time.
+- __`TERMINATED`__: thread which has finished executing.
 
-Un thread poate fi într-o singură stare la un moment dat.
+A thread can only be in one of these states at any given time.
 
-## Modalități de a crea obiecte de tip `Thread`{.java}
+## Thread life-cycle  (source: [HowToDoInJava.com](https://howtodoinjava.com/java/multi-threading/java-thread-life-cycle-and-thread-states/))
 
-### Directă
+![Thread states and transitions between them](https://cdn1.howtodoinjava.com/wp-content/uploads/2016/04/Java-Thraed-Life-Cycle-States.jpg)
 
-- implementarea interfeței `Runable`{.java}
-- ca subclasă a clasei `Thread`{.java}
 
-### Abstractă
+## `Thread`{.java} creation
 
-- folosind metodele clasei `Executors`{.java}
+### Direct
 
-## Definirea unui thread folosind `Runnable`{.java}
+- by deriving `Thread`{.java} class
+- by implementing the `Runable`{.java} interface
+
+### Abstract
+
+- Using the `Executors`{.java} class
+
+## Thread creation using `Runnable`{.java}
 
 ### Standard
 ```java
@@ -148,8 +153,8 @@ public class HelloRunnable implements Runnable {
 ```java
 public class HelloTh {
   public static void main(String args[]) {
-    new Thread ( () -> System.out.println("Hello thread!") )
-        .start();
+    new Thread( () -> System.out.println("Hello thread!")
+              ).start();
   } }
 ```
 
@@ -168,76 +173,58 @@ public class HelloThread extends Thread {
 }
 ```
 
-## Ciclul de viață al unui Thread
+## `public class Thread implements Runnable`
 
-Sursa: [HowToDoInJava.com](https://howtodoinjava.com/java/multi-threading/java-thread-life-cycle-and-thread-states/)
-
-![Ciclul de viață al unui Thread](https://cdn1.howtodoinjava.com/wp-content/uploads/2016/04/Java-Thraed-Life-Cycle-States.jpg "Stările unui thread și tranzițiile între ele")
-
-
-## `public class Thread implements Runnable`{.java}
-
-### Metode dinamice (se aplică unui obiect de tip `Thread`)
-
-start()
-
-: pornește thread-ul într-un fir de execuție separat și invocă run
-          
-run()
-
-: este suprascrisă sau apelată din Runnable  
-
-join(), join(long millisecunde)
-
-: este invocată de thread-ul curent pe un al doilea thread; 
-    thread-ul current este blocat până când al doilea thread iși termină execuția sau 
-    până când expiră timpul
-
-interrupt()
-
-: întrerupe execuția thread-ului; 
-    este folosit în situația în care un thread îi cere altui thread să își întrerupă execuția
-
-boolean isAlive()
-
-: întoarce true dacă thread-ul nu și-a încetat execuția
+- Dynamic methods (called on a `Thread` object)
+   
+   start()
+   
+   : A new execution thread is created and the JVM invokes the `run()`{.java} method
+             
+   join()
+   
+   : waits for the given thread to finish execution
+   
+   interrupt()
+   
+   : asks the given thread to interrupt its execution
+   
+   boolean isAlive()
+   
+   : tests whether the thread is alive
 
 
-### Metode statice (se aplica thread-ului current)
+- Static methods (applying to the current thread)
+   
+   yield()
+   
+   : current thread is willing to yield the processor
+   
+   sleep(long milis)
+   
+   : current threads sleeps for given time
+   
+   Thread currentThread()
+                 
+   : Returns a reference to the currently executing thread
 
-yield()
-
-: thread-ul cedează rândul altui thread
-
-sleep(long milisecunde)
-
-: thread-ul este blocat pentru perioada precizată
-
-currentThread()
-              
-: întoarce o referință la thread-ul care invocă metoda
-
-## Thread-uri în JVM (sursa: [docs.oracle.com](https://docs.oracle.com/javase/7/docs/api/java/lang/Thread.html))
-
-Atunci când mașina virtuala Java pornește, de obicei există un singur thread
-non-deamon[^1], care de obicei lansează în execuție metoda `main` a unei clase.
-
-Mașina virtuală Java continuă să execute thread-uri până când:
-
-- Este apelată metoda `exit` din clasa `Runtime` și managerul de securitate 
-    permite terminarea execuției
-
-- Toate thread-urile non-daemon s-au terminat
-    - prin terminarea cu succes a execuției metodei `run`
-    - printr-o excepție propagată dincolo de metoda `run`
+## JVM threads (source: [docs.oracle.com](https://docs.oracle.com/javase/7/docs/api/java/lang/Thread.html))
 
 
-[^1]: Thread-uri daemon: thread-uri cu prioritate mica, care au rolul de a servi thread-urile utilizator
-(e.g. garbadge collector thread)
+When a Java Virtual Machine starts up, there is usually a single non-daemon thread[^daemon], which typically calls the method named main of some designated class.
 
-## `Thread.sleep()`{.java} și `InterruptedException`{.java}
+The Java Virtual Machine continues to execute threads until either:
 
-`sleep()`  aruncă excepție dacă threadul este întrerupt de un alt thread în timp ce sleep este activă.
+- The exit method of class Runtime has been called and the security manager permits the exit operation to take place.
+- All threads that are not daemon threads have died, either 
+  - by returning from the call to the run method or
+  - by throwing an exception that propagates beyond the run method.
+
+[^daemon]: Daemon thread: low priority thread servicing user threads (e.g. garbage collector thread)
+
+## `Thread.sleep()` and `InterruptedException`
+
+`sleep()` throws an exception if the thread is interruped while still sleeping.
 
 ```java
 public class SleepyMessages {
@@ -254,7 +241,7 @@ public class SleepyMessages {
 }
 ```
 
-## `sleep` cu tratarea excepției `InterruptedException`
+## `sleep`, handling the `InterruptedException`
 
 ```java
 public class MessageLoop implements Runnable {
@@ -274,6 +261,7 @@ public class MessageLoop implements Runnable {
 
 ## `currentThread`, `getName`
 
+\small
 ```java
   public static void threadMessage(String message) {
     String threadName = Thread.currentThread().getName();
@@ -292,8 +280,9 @@ public class MessageLoop implements Runnable {
 }
 ```
 
-## `isAlive`, `join` cu expirare și `interrupt`
+## `isAlive`, `join` with timeout, and `interrupt`
 
+\small
 ```java
 public class MessageLoopInterrupted {
   public static void main(String args[])
@@ -330,7 +319,7 @@ Thread-0: I wasn't done!
 main: Finally!
 ```
 
-## `ThreadLocal`{.java}: variabile locale thread-ului
+## `ThreadLocal`: variables locat to the thread
 
 ```java
 public class ThreadLocalId implements Runnable {
@@ -352,7 +341,7 @@ public class ThreadLocalId implements Runnable {
 }
 ```
 
-## Interferență între thread-uri
+## Thread interference
 
 ```java
 public class Interference {
@@ -370,60 +359,80 @@ public class Interference {
 }
 ```
 
-### Instrucțiunile `++` și `--` nu sunt __atomice__
+. . .
+
+### `++` and `--` are not __atomic__
 
 ```
 c = 2343
 ```
 
-## Sincronizarea thread-urilor
+## Thread syncronization
 
-### Metode sincronizate
+### Synchronized methods
 
 ```java
 private synchronized void syncMethod () {
-    //codul metodei
+    //method body
   }
 ```
 
-### Instrucțiuni sincronizate
+### Synchronized code
 
 ```java
 synchronized (object reference){ 
-    // instructiuni
+    // code
   }
 ```
 
-### Metodă sincronizată e un bloc sincronizat de `this`{.java}
+### Synchonized methods are synchronizing the body using  `this`{.java}
 
 ```java
 private void syncMethod () {
       synchronized (this){
-         //codul metodei
+         //method body
    }
 }
 ```
 
-## Mecanismul de sincronizare al thread-urilor
+# Thread synchronization mechanism
 
-- Fiecare obiect are un lacat intern (intrinsic lock, monitor lock).
+## Intrinsic locks
+- Every object has an intrinsic lock associated with it
 
-- Un thread are acces la obiect numai dupa ce detine (aquire) lacatul intern, pe care il elibereaza release) dupa ce a terminat de lucrat cu obiectul; atat timp cat un thread detine lacatul intern al unui obiect, orice alt thread care doreste sa faca aquire este blocat.
+- A thread needing to access an object's fields should
+  + `acquire` the objects intrinsic lock
+  + access/alter the object's data
+  + `release` the intrinsic lock
+- No thread can acquire a lock while another one holds it
+  + a thread attempting to do so will _block_ in the acquire phase
 
-- Cand un thread apeleaza o metoda sincronizata se face aquire pe lacatul obiectului care detine metoda; 
-    pentru metodele statice, lactul este al obiectului Class asociat clasei respective.
-
-- Lacatul este pe obiect, accesul la toate metodele sincronizate este blocat, 
-    dar accesul la metodele nesincronizate nu este blocat. 
 
 
-### Atentie! 
+## When calling a synchronized method
 
-- Un thread poate face aquire pe un lacat pe care deja il detine (reentrant synchronization)
-- `Thread.sleep()`{.java} nu elibereaza lock-urile deținute de thread
-- `ob.wait()`{.java}  elibereaza lock-ul deținut de thread asupra lui `ob`
+### Non-static synchronized methods
+- The intrinsic lock of the object is acquired
+- The method is executed
+- The intrinsic lock of the object is released
+- no other non-static, syncronized methods can be called
+  simultaneously __on the same object__
 
-## Eliminarea interferenței prin sincronizare (pe instrucțiuni)
+### Static synchronized methods
+- Static methods use the Class object for that class
+- No other static synchronized methods __belonging to the same
+  class__ can be called simultaneously
+
+## Warnings
+- Access to the non-synchronized methods is not blocked
+- Static and non-static synchronized methods do not mutually
+  exclude each-other
+- A thread can re-aquire a lock it is already holding
+  (reentrant synchronization)
+- `Thread.sleep()`{.java} does not release the locks
+- `ob.wait()`{.java}  releases the intrinsic lock of `ob` held by the thread
+
+## Solving interference by synchronization (on statements)
 
 ```java
 public class NonInterference {
@@ -444,7 +453,7 @@ public class NonInterference {
 }
 ```
 
-## Eliminarea interferenței prin metode sincronizate
+## Solving interference through synchronized methods
 
 ```java
 public class SynchronizedMethod implements Runnable {
@@ -465,40 +474,39 @@ public class SynchronizedMethod implements Runnable {
 }
 ```
 
-## Proprietăți ale lacătelor 
+## Lock properties
 
-- Numai un singur thread poate detine lacatul obiectului la un moment dat.
+- Only one thread can hold a given lock at any given time
 
-- Un thread detine lacatul intern al unui obiect daca:
-    - executa o metoda sincronizata a obiectului
-    - executa un bloc sincronizat de obiect 
-    - daca obiectul este `Class`{.java}, thread-ul executa o metoda static sincronizata 
+- A thread holds the intrinsil lock of an object if either
+    - it executes a synchronized method of the object
+    - it executes a block synchronized by the object
+    - if the object's type is `Class`{.java}, and the thead executes a `static synchronized`{.java} method
 
 
-## Metode de sincronizare în clasa `Object`{.java}
+## Synchonization control through the `Object`{.java} class
 
 `void wait()`{.java}, `void wait(long milisecunde)`{.java}
 
-: thread-ul intră în așteptare până când primește `notifyAll`{.java} sau `notify`{.java} de la alt thread
+: the thread enters the WAITING state, waiting to receive a  `notifyAll`{.java} or a `notify`{.java} signal for the object's intrinsic lock
 
 `void notifyAll()`{.java}
 
-: trezește toate threadurile care așteaptă lacătul obiectului
+: wakes up all threads waiting on this object's intrinsic lock
 
 `void notify()`{.java}
 
-: trezește un singur thread care așteaptă lacătul obiectului; 
+: wakes up a single thread waiting on this object's intrinsic lock
 
-    - thread-ul este ales arbitrar 
+    - the thread is randomly chosen
 
-## `object.wait()`{.java}
+## `object.wait()`
 
-- poate fi apelată de orice alt obiect
-- trebuie apelată din blocuri sincronizate pe `object`
-- eliberează lacătul intern al lui `object`
-- așteaptă să primească o notificare prin `notify`{.java}/`notifyAll`{.java}
-- după ce primește notificare re-încearcă să dețina lacatul lui `object` 
-- aruncă `InterruptedException` dacă thread-ul este întrerupt
+- Must be called from within a block synchronized on `object`
+- Frees `object`'s intrinsic lock
+- Waits until notified by `notify`{.java}/`notifyAll`{.java}
+- When notified, it attempts to reaquire `object`'s intrinsic lock
+- Throws an `InterruptedException` if the thread is interrrupded while in `WAITING` state
 
 ```java
 synchronized (obj) {
@@ -510,5 +518,5 @@ synchronized (obj) {
 
 ### Important
 
-`obj.wait()` trebuie tot timpul pus într-o buclă, datorită posibilității de _spurious wakeup_
+_Always_ enclose `obj.wait()` in a loop due to  _spurious wakeup_
 
