@@ -92,7 +92,7 @@ Programming, 2002
 - Three assignments, covering the three main topics discussed
   + Each assignment accounts for 20 points
 - Duration of an assignment: 4 weeks since it is posted.
-- Assitance will be provided during lab hours
+- Assistance will be provided during lab hours
 - Must be delivered and defended in-person during lab hours
 - Delayed submission: *5 points of penalty for every week*
 
@@ -102,15 +102,16 @@ Programming, 2002
 + Deadline for choosing a project: before the Easter holiday
 
 ### Two avenues to success :-)
-1. Building a more complex application
-   - using more than one of the concurrency models discussed
+1. Programming (for the practical ones)
+   - Build a more complex application (consult with Adrian)
+     + using more than one of the concurrency models discussed
    - Deadline: in session, by exam date
    - Early submissions are welcomed and appreciated
 2. Research (for the more theoretically inclined)
-   * Choosing a concurrency research paper (ask me for guidance)
-   * Understanding the theme, creating a presentation and a demo
-   * Presenting the findings to your peers during final classes
-   * Deadline for submitting: *May 23* 
+   - Choose a concurrency research paper (consult with me)
+   - Understand the theme, create a presentation and a demo
+   - Present the findings to your peers during final classes
+   - Deadline for submission: *May 23* 
 
 ## Grading
 
