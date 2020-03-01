@@ -1,6 +1,6 @@
-package ro.unibuc.fmi.iclp;
+package ro.unibuc.fmi.iclp.one;
 
-public class HelloThread extends Thread {
+public class HelloRunnable implements Runnable {
 
     @Override
     public void run() {
@@ -9,10 +9,10 @@ public class HelloThread extends Thread {
     }
 
     public static void main(String[] args) {
-        Thread thread = new HelloThread();
+        Thread thread = new Thread(new HelloRunnable());
         thread.start();
         System.out.print(" ");
         for (int i= 0; i< 10000; i++);
-        System.out.print("World");
+        System.out.print("Runnable");
     }
 }

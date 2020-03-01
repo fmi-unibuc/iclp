@@ -261,7 +261,6 @@ public class MessageLoop implements Runnable {
 
 ## `currentThread`, `getName`
 
-\small
 ```java
   public static void threadMessage(String message) {
     String threadName = Thread.currentThread().getName();
@@ -282,7 +281,6 @@ public class MessageLoop implements Runnable {
 
 ## `isAlive`, `join` with timeout, and `interrupt`
 
-\small
 ```java
 public class MessageLoopInterrupted {
   public static void main(String args[])
@@ -319,7 +317,7 @@ Thread-0: I wasn't done!
 main: Finally!
 ```
 
-## `ThreadLocal`: variables locat to the thread
+## `ThreadLocal`: variables local to the thread
 
 ```java
 public class ThreadLocalId implements Runnable {
@@ -367,6 +365,19 @@ public class Interference {
 c = 2343
 ```
 
+# Thread synchronization mechanism
+
+## Intrinsic locks
+- Every object has an intrinsic lock associated with it
+
+- A thread needing to access an object's fields should
+  + `acquire` the objects intrinsic lock
+  + access/alter the object's data
+  + `release` the intrinsic lock
+- No thread can acquire a lock while another one holds it
+  + a thread attempting to do so will _block_ in the acquire phase
+
+
 ## Thread syncronization
 
 ### Synchronized methods
@@ -395,19 +406,6 @@ private void syncMethod () {
 }
 ```
 
-# Thread synchronization mechanism
-
-## Intrinsic locks
-- Every object has an intrinsic lock associated with it
-
-- A thread needing to access an object's fields should
-  + `acquire` the objects intrinsic lock
-  + access/alter the object's data
-  + `release` the intrinsic lock
-- No thread can acquire a lock while another one holds it
-  + a thread attempting to do so will _block_ in the acquire phase
-
-
 
 ## When calling a synchronized method
 
@@ -422,15 +420,6 @@ private void syncMethod () {
 - Static methods use the Class object for that class
 - No other static synchronized methods __belonging to the same
   class__ can be called simultaneously
-
-## Warnings
-- Access to the non-synchronized methods is not blocked
-- Static and non-static synchronized methods do not mutually
-  exclude each-other
-- A thread can re-aquire a lock it is already holding
-  (reentrant synchronization)
-- `Thread.sleep()`{.java} does not release the locks
-- `ob.wait()`{.java}  releases the intrinsic lock of `ob` held by the thread
 
 ## Solving interference by synchronization (on statements)
 
@@ -478,45 +467,18 @@ public class SynchronizedMethod implements Runnable {
 
 - Only one thread can hold a given lock at any given time
 
-- A thread holds the intrinsil lock of an object if either
+- A thread holds the intrinsic lock of an object if either
     - it executes a synchronized method of the object
     - it executes a block synchronized by the object
-    - if the object's type is `Class`{.java}, and the thead executes a `static synchronized`{.java} method
+    - if the object's type is `Class`{.java}, and the thead executes
+      a `static synchronized`{.java} method
 
 
-## Synchonization control through the `Object`{.java} class
-
-`void wait()`{.java}, `void wait(long milisecunde)`{.java}
-
-: the thread enters the WAITING state, waiting to receive a  `notifyAll`{.java} or a `notify`{.java} signal for the object's intrinsic lock
-
-`void notifyAll()`{.java}
-
-: wakes up all threads waiting on this object's intrinsic lock
-
-`void notify()`{.java}
-
-: wakes up a single thread waiting on this object's intrinsic lock
-
-    - the thread is randomly chosen
-
-## `object.wait()`
-
-- Must be called from within a block synchronized on `object`
-- Frees `object`'s intrinsic lock
-- Waits until notified by `notify`{.java}/`notifyAll`{.java}
-- When notified, it attempts to reaquire `object`'s intrinsic lock
-- Throws an `InterruptedException` if the thread is interrrupded while in `WAITING` state
-
-```java
-synchronized (obj) {
-  while (<condition does not hold>)
-    obj.wait();
-  ... // Perform action appropriate to condition
-}
-```
-
-### Important
-
-_Always_ enclose `obj.wait()` in a loop due to  _spurious wakeup_
-
+## Warnings
+- Access to the non-synchronized methods is not blocked
+- Static and non-static synchronized methods do not mutually
+  exclude each-other
+- A thread can re-aquire a lock it is already holding
+  (reentrant synchronization)
+- `Thread.sleep()`{.java} does not release the locks
+- `ob.wait()`{.java}  releases the intrinsic lock of `ob` held by the thread

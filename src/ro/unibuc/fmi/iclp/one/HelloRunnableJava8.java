@@ -1,4 +1,4 @@
-package ro.unibuc.fmi.iclp;
+package ro.unibuc.fmi.iclp.one;
 
 public class HelloRunnableJava8 {
     static volatile int i;
