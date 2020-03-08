@@ -7,7 +7,7 @@ public class ProducerThread<T> implements Runnable {
     private final DropBox<T> box;
     private Collection<T> items;
 
-    public ProducerThread(DropBox box, Collection<T> items)
+    public ProducerThread(DropBox<T> box, Collection<T> items)
     { this.box = box; this.items = items; }
 
     @Override public void run() {

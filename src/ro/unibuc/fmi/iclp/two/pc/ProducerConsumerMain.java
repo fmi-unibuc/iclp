@@ -1,10 +1,12 @@
 package ro.unibuc.fmi.iclp.two.pc;
 
 import java.util.Arrays;
+import java.util.concurrent.SynchronousQueue;
 
 public class ProducerConsumerMain {
     public static void main(String [] args)
             throws InterruptedException {
+        SynchronousQueue x;
         DropBox<String> box = new Cell<>();
         ProducerThread<String> p1 = new ProducerThread<>(box,
                 Arrays.asList("This", "is", "important"));
