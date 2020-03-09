@@ -14,18 +14,18 @@ public class ReadersWriters {
         final ReadWriteLock lock = new ReentrantReadWriteLock();
         Thread incThread = new Thread(() -> {
             for (int x = 0; x < 5000; ++x) {
-//                sync(lock.writeLock(), () -> {
+                syncRun(lock.writeLock(), () -> {
                             for (int i = 0; i < 5; i++)
                             { c++; }
-//                });
+                });
                 sleep(1);
             }});
         Thread decThread = new Thread(() -> {
             for (int x = 0; x < 5000; ++x) {
-//                sync(lock.writeLock(), () -> {
+                syncRun(lock.writeLock(), () -> {
                     for (int i = 0; i < 5; i++)
                     { c--; }
-//                });
+                });
                 sleep(1);
             }});
         Runnable reader = () -> {

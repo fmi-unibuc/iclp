@@ -10,9 +10,12 @@ public class FutureExample {
             Thread.sleep(time);
             return time;
         });
-        while (!future.isDone()) {
+        for (int i = 0; i<2 && !future.isDone(); i++)  {
             System.out.println("Task not done ...");
             Thread.sleep(500);
+        }
+        if (!future.isDone()) {
+            System.out.println("Tired of waiting...");
         }
         System.out.println("Task duration: " + future.get());
         executor.shutdown();

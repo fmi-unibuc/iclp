@@ -10,8 +10,9 @@ public class NonInterference implements Runnable{
     private Lock lock = new ReentrantLock();
 
     private void increment() {
-        syncRun(lock, () ->
-            c++
+        syncRun(lock, () -> {
+                    c++;
+                }
         );
     }
 
