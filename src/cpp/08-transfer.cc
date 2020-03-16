@@ -4,6 +4,7 @@
 int main()
 {
     std::srand(std::time(nullptr)); // use current time as seed for random generator
+    SYSTEM_FAILURE_RATE = std::rand()%1900+100;
 
     Account acc1("Ionel", 2000);
     Account acc2("Gigel", 2000);

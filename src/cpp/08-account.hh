@@ -1,7 +1,8 @@
 #include <mutex>
 #include <thread>
 #include <iostream>
-#define SYSTEM_FAILURE_RATE 999
+
+int SYSTEM_FAILURE_RATE;
 
 int throws;
 
@@ -14,7 +15,7 @@ struct Account {
 };
 
 bool withdraw(Account & from, int num) {
-    atomic_noexcept {
+    atomic_commit {
         if (from.balance < num) return false;
         //std::this_thread::yield(); 
         from.balance -= num;
@@ -23,7 +24,7 @@ bool withdraw(Account & from, int num) {
 }
 
 void deposit(Account & to, int num) {
-    atomic_noexcept {
+    atomic_commit {
         to.balance += num;
     }
 }
@@ -31,7 +32,7 @@ void deposit(Account & to, int num) {
 bool transfer(Account &from, Account &to, int num)
 {
     static int count = 0;
-    atomic_noexcept {
+    atomic_commit {
         count++;
         bool ok = withdraw(from, num);
         if (count % SYSTEM_FAILURE_RATE == 0) {

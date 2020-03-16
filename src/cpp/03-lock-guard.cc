@@ -5,6 +5,7 @@
 int f(int tID)
 {   static int i = 0;
     static std::mutex g_i_mutex;
+
     const std::lock_guard<std::mutex> lock(g_i_mutex);
     if (tID % 2 == 0) ++i; else --i;
     return i;

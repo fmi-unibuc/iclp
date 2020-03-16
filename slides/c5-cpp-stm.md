@@ -149,3 +149,36 @@ Atomic statements
 
 `atomic_commit { ... }`
 : If an exception is thrown, commit as-is
+
+# Dining Problem
+
+## Dining Philosophers Problem
+
+> Five philosophers, numbered from 0 through 4 are living in a house where the
+> table [is] laid for them, each philosopher having his own place at the table:
+
+> ![](http://www.cs.utexas.edu/users/EWD/transcriptions/EWD03xx/EWD310_img_51.jpg){ height=30% }
+> Their only problem —besides those of philosophy— is that the dish served is
+> a very difficult kind of spaghetti, that has to be eaten with two forks.
+> There are two forks next to each plate, so that presents no difficulty:
+> as a consequence, however, no two neighbours may be eating simultaneously.
+
+## Solution 1 `09-philosophers.cc`
+
+- Take forks as a transaction, if they are available
+  - if not, skip a meal
+
+## Solution 2 `10-philosophers-locks.cc`
+
+- Take both forks simultaneously
+  - wait until both become available
+
+## Solution 3 (do it yourselves)
+
+- Take forks as a transaction, if they are available
+- if not
+  + abort transaction
+  + wait for things to change
+  + retry
+
+- Talk with Adrian during lab-time about possible approaches to that

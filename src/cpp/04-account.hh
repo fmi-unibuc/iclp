@@ -1,7 +1,9 @@
 #include <mutex>
 #include <thread>
 #include <iostream>
-#define SYSTEM_FAILURE_RATE 1e-3
+
+int SYSTEM_FAILURE_RATE;
+int throws;
 
 struct Account {
     explicit Account(const char* _name, int initial)
@@ -16,7 +18,7 @@ bool withdraw(Account & from, int num) {
     const std::lock_guard<std::mutex> from_lock(from.m_balance);
     // ^^^ fixes bug in 04-withdrawx2.cc
     if (from.balance < num) return false;
-    //std::this_thread::yield(); // expose bug in 04-withdrawx2.cc
+    std::this_thread::yield(); // expose bug in 04-withdrawx2.cc
     from.balance -= num;
     return true;
 }
@@ -29,8 +31,13 @@ void deposit(Account & to, int num) {
 
 bool transfer(Account &from, Account &to, int num)
 {
+    static int count = 0;
+    count++;
     bool ok = withdraw(from, num);
-    // if ((double)std::rand()/RAND_MAX < SYSTEM_FAILURE_RATE) throw -1;
+    if (count % SYSTEM_FAILURE_RATE == 0) {
+        throws++;
+        throw std::runtime_error("system failure!");
+    }
     // ^^^ expose non-atomicity in 04-transfer.cc
     if (ok) {
         deposit(to, num);

@@ -40,8 +40,8 @@ bool takeForks(int phil, int& left, int& right) {
             left = right = phil;
             return true;
         }
+        return false;
     }
-    return false;
 }
 
 void releaseForks(int& left, int& right) {
