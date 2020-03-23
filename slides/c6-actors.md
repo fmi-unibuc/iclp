@@ -76,9 +76,9 @@ An actor is a computational entity that, in response to a message it receives, c
 - create new actors;
 - designate the behavior to be used for the next message it receives.
 
-### Defining characteriristics
+### Defining characteristics
 - Interaction only through asynchronous communication, using _message passing_
-- Inherent concurrency of computation withing and among actors
+- Inherent concurrency of computation within and among actors
 - Private communication based on address
   - Agent can only communicate with
     - The agents it created (its children)
@@ -100,7 +100,8 @@ Encapsulation
 : calls transfer execution, message passing doesn't
 
 No need for locks
-: Messages are processed one at a time, hence no races
+: Messages are processed one at a time
+: hence, no races
 
 Task delegation
 : No locks means all threads can be fully used
@@ -150,7 +151,7 @@ messages.
 ### Open Telecom Platform (OTP)
   + collection of middleware, libraries and tools in Erlang
   + Supporting development in Erlang
-  + APIs for building robuist distributed systems 
+  + APIs for building robust distributed systems 
 
 ## Elixir
 
@@ -368,7 +369,7 @@ iex> Enum.reduce 1..5, &(&1 + 10 * &2)
 iex> Enum.reduce [1,2,3,4,5], [], &([&1] ++ &2)
 [5, 4, 3, 2, 1]
 
-iex> require Integer # to use macros from the Integer module
+iex> require Integer # to use macros from Integer module
 Integer
 iex> Enum.filter 1..10, &Integer.is_odd/1
 [1, 3, 5, 7, 9]

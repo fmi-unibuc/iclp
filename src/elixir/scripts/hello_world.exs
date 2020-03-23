@@ -1,15 +1,18 @@
-defmodule KV do
-  def start_link do
-    Task.start_link(fn -> loop(%{}) end)
-  end
+7 + 3
 
-  defp loop(map) do
-    receive do
-      {:get, key, caller} ->
-        send caller, Map.get(map, key)
-        loop(map)
-      {:put, key, value} ->
-        loop(Map.put(map, key, value))
-    end
-  end
+IO.puts "Salut"
+
+defmodule MyBools do
+# or true, _ -> true
+  def myOr(true, _), do: true
+# or false, orice -> orice
+  def myOr(false, anything), do: anything
+
+# || false, y -> y
+  def myNSOr(false, anything), do: anything
+# || nil,y -> y
+  def myNSOr(nil, anything), do: anything
+# || x,_ -> x
+  def myNSOr(something, _), do: something
 end
+
