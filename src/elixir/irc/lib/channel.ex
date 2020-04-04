@@ -1,29 +1,28 @@
 defmodule Channel do
   def init(channel_name) do
+    {:ok, userAgent} = Storage.start_link()
     loop(%ChannelState{
-      users: spawn_link(Storage, :init, []),
+      users: userAgent,
       name: channel_name,
     })
   end
 
+  @spec loop(ChannelState.t()) :: no_return
   def loop(state) do
     receive do
       {:post, message} ->
-        send(state.users, {:foreach, &send(&1, {:post, state.name, message})})
+        Storage.foreach(state.users, &send(&1, {:post, state.name, message}))
       {:join, name, address} ->
-        me = self()
-        send(state.users, {:put, name, address, &handleJoin(me, name, &1)})
+        case Storage.put(state.users, name, address) do
+          :ok -> post(self(), "#{name} has joined the channel")
+          :not_ok -> IO.puts :stderr, "#{name} already in the channel"
+        end
       {:leave, name} ->
-        send(state.users, {:delete, name})
+        Storage.delete(state.users, name)
         post(self(), "#{name} has left the channel")
     end
     loop(state)
   end
 
   defp post(me, message), do: send(me, {:post, message})
-
-  defp handleJoin(me, name, :ok), do:
-    post(me, "#{name} has joined the channel")
-  defp handleJoin(_me, name, :not_ok), do:
-    IO.puts :stderr, "#{name} already in the channel"
 end
