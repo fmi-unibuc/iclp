@@ -2,30 +2,24 @@ defmodule IrcTest do
   use ExUnit.Case
 
   test "registration" do
-    server = spawn(Server, :init, [])
-    me = self()
-    send(server, {:register, :name, me})
+    {:ok, server} = Server.start_link()
+    {:registered, _} = Server.register(server, :name)
     assert_receive {:post, :general, "name has joined the channel"}
-    assert_receive {:registered, :name, ^server, _}
 
-    send(server, {:register, :name, me})
-    assert_receive {:not_registered, :name, ^server}
+    assert Server.register(server, :name) == :name_already_registered
   end
 
   test "interaction" do
-    server = spawn(Server, :init, [])
-    me = self()
+    {:ok, server} = Server.start_link()
 
-    send(server, {:register, :observer, me})
+    {:registered, _observerThread} = Server.register(server, :observer)
     assert_receive {:post, :general, "observer has joined the channel"}
-    assert_receive {:registered, :observer, ^server, observerThread}
 
-    send(server, {:register, :user, me})
+    {:registered, userThread} = Server.register(server, :user)
     assert_receive {:post, :general, "user has joined the channel"}
     assert_receive {:post, :general, "user has joined the channel"}
-    assert_receive {:registered, :user, ^server, userThread}
 
-    send userThread, {:post, :general, "Salut!"}
+    ServerThread.post(userThread, :general, "Salut!")
     assert_receive {:post, :general, {:user, "Salut!"}}
     assert_receive {:post, :general, {:user, "Salut!"}}
 

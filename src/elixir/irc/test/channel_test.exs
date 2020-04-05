@@ -3,21 +3,21 @@ defmodule ChannelTest do
   doctest Channel
 
   test "channel test" do
-    channel = spawn(Channel, :init, [:mychannel])
+    {:ok, channel} = Channel.start_link(:mychannel)
     void = spawn(fn -> 5 end)
     me = self()
-    send(channel, {:join, :observer, me})
+    Channel.join(channel,:observer, me)
     assert_receive {:post, :mychannel, "observer has joined the channel"}
 
-    send(channel, {:join, :name, void})
+    Channel.join(channel, :name, void)
     assert_receive {:post, :mychannel, "name has joined the channel"}
 
-    send(channel, {:join, :name, void})
+    Channel.join(channel, :name, void)
 
-    send(channel, {:post, {:name, "Salut!"}})
+    Channel.post(channel, {:name, "Salut!"})
     assert_receive {:post, :mychannel, {:name, "Salut!"}}
 
-    send(channel, {:leave, :name})
+    Channel.leave(channel, :name)
     assert_receive {:post, :mychannel, "name has left the channel"}
   end
 end
