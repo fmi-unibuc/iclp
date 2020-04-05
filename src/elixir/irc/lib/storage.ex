@@ -20,11 +20,11 @@ defmodule Storage do
   Assigns a value to key; returns :not_ok if key already present
   """
   def put(storage, key, value) do
-    Agent.get_and_update(storage, &put_handler(&1, key, value))
+    Agent.get_and_update(storage, __MODULE__, :put_handler, [key, value])
   end
 
   @spec put_handler(map, any, any) :: {:not_ok | :ok, map}
-  defp put_handler(state, key, value) do
+  def put_handler(state, key, value) do
     case Map.get(state, key) do
       nil -> {:ok, Map.put(state, key, value)}
       _value -> {:not_ok, state}
@@ -35,21 +35,21 @@ defmodule Storage do
   Assigns a value to key; overwrites existing value
   """
   def put!(storage, key, value) do
-    Agent.update(storage, &Map.put(&1, key, value))
+    Agent.update(storage, Map, :put, [key, value])
   end
 
   @doc """
   Gets the value for the key; May return nil
   """
   def get(storage, key) do
-    Agent.get(storage, &Map.get(&1, key))
+    Agent.get(storage, Map, :get, [key])
   end
 
   @doc """
   Removes the entry corresponding to key
   """
   def delete(storage, key) do
-    Agent.update(storage, &Map.delete(&1, key))
+    Agent.update(storage, Map, :delete, [key])
   end
 
   @doc """

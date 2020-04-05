@@ -23,9 +23,23 @@ defmodule IrcTest do
     assert_receive {:post, :general, {:user, "Salut!"}}
     assert_receive {:post, :general, {:user, "Salut!"}}
 
-    Process.exit(userThread, :kill)
+    GenServer.stop(userThread)
 
     assert_receive {:post, :general, "user has left the channel"}
+  end
 
+  test "supervisor" do
+    {:ok, supervisor} = ServerSupervisor.start_link()
+    Server.register(Server, :user)
+    assert_receive {:post, :general, "user has joined the channel"}
+    pid = Process.whereis(Server)
+    Process.exit(pid, :kill)
+    Process.sleep(1)
+    Server.register(Server, :user)
+    assert_receive {:post, :general, "user has joined the channel"}
+    :ok = Supervisor.terminate_child(supervisor, Server)
+    {:ok, _} = Supervisor.restart_child(supervisor, Server)
+    Server.register(Server, :user)
+    assert_receive {:post, :general, "user has joined the channel"}
   end
 end

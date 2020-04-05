@@ -23,9 +23,9 @@ defmodule Channel do
 
   @impl true
   def init(channel_name) do
-    {:ok, userAgent} = Storage.start_link()
+    {:ok, usersAgent} = Storage.start_link()
     {:ok, %ChannelState{
-      users: userAgent,
+      users: usersAgent,
       name: channel_name,
     }}
   end

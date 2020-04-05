@@ -12,6 +12,7 @@ defmodule ServerThread do
     GenServer.cast(server, {:join, channelName})
   end
 
+  def leave(server, :general), do: GenServer.stop(server)
   def leave(server, channelName) do
     GenServer.cast(server, {:leave, channelName})
   end
@@ -20,12 +21,15 @@ defmodule ServerThread do
     GenServer.cast(server, {:post, name, message})
   end
 
-  @doc """
-  """
   @impl true
   def init(initState) do
     join(self(), :general)
     {:ok, initState}
+  end
+
+  @impl true
+  def terminate(_reason, state) do
+    Storage.foreach(state.userChannels, &Channel.leave(&1, state.userName))
   end
 
   @impl true
@@ -39,9 +43,6 @@ defmodule ServerThread do
     end
     {:noreply, state}
   end
-
-  @impl true
-  def handle_cast({:leave, :general}, _state), do: exit(:normal)
 
   @impl true
   def handle_cast({:leave, name}, state) do

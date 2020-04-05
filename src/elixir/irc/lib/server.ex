@@ -5,7 +5,7 @@ defmodule Server do
 
   @doc """
   """
-  use GenServer
+  use GenServer, restart: :transient
 
   def start_link(opts \\ []) do
     GenServer.start_link(__MODULE__, :ok, opts)
@@ -31,7 +31,8 @@ defmodule Server do
   end
 
   @impl true
-  def handle_call({:register, name}, {address, _tag}, state) do
+  def handle_call({:register, name}, from, state) do
+    {address, _tag} = from
     case Storage.put(state.users, name, address) do
       :ok ->
         {:ok, localChannels} = Storage.start_link()
@@ -43,9 +44,10 @@ defmodule Server do
             userChannels: localChannels
           }
         {:ok, thread} = ServerThread.start(initState)
+        GenServer.reply(from, {:registered, thread})
         ref = Process.monitor(thread)
-        Storage.put!(state.userThreads, ref, {thread, name, localChannels})
-        {:reply, {:registered, thread}, state}
+        Storage.put!(state.userThreads, ref, name)
+        {:noreply, state}
       :not_ok ->
         {:reply, :name_already_registered, state}
     end
@@ -55,8 +57,7 @@ defmodule Server do
   def handle_info({:DOWN, ref, :process, _thread, _reason}, state) do
     case Storage.get(state.userThreads, ref) do
       nil -> IO.puts :stderr, "[server]: invalid_reference #{ref}; ignored"
-      {_thread, name, userChannels} ->
-        Storage.foreach(userChannels, &Channel.leave(&1, name))
+      name ->
         Storage.delete(state.userThreads, ref)
         Storage.delete(state.users, name)
     end
