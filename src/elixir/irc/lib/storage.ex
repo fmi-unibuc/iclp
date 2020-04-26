@@ -20,7 +20,8 @@ defmodule Storage do
   Assigns a value to key; returns :not_ok if key already present
   """
   def put(storage, key, value) do
-    Agent.get_and_update(storage, __MODULE__, :put_handler, [key, value])
+    Agent.get_and_update(storage,
+      &put_handler(&1, key, value))
   end
 
   @spec put_handler(map, any, any) :: {:not_ok | :ok, map}

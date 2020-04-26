@@ -29,7 +29,8 @@ defmodule ServerThread do
 
   @impl true
   def terminate(_reason, state) do
-    Storage.foreach(state.userChannels, &Channel.leave(&1, state.userName))
+    Storage.foreach(state.userChannels,
+      &Channel.leave(&1, state.userName))
   end
 
   @impl true

@@ -32,7 +32,8 @@ defmodule Channel do
 
   @impl true
   def handle_cast({:post, message}, state) do
-    Storage.foreach(state.users, &send(&1, {:post, state.name, message}))
+    Storage.foreach(state.users,
+      &send(&1, {:post, state.name, message}))
     {:noreply, state}
   end
 
