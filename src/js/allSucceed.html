@@ -1,0 +1,22 @@
+<html>
+    <head>
+        <title>Priomises and lies</title>
+    </head>
+    <script lang="JavaScript">
+    var p1 = Promise.resolve(3);
+    var p2 = new Promise((resolve, reject) =>
+        setTimeout(() => resolve("foo"), 3000)
+    );
+    var p3 = new Promise((resolve, reject) =>
+        setTimeout(() => resolve("bar"), 2000)
+    );
+
+    Promise.all([p1, p2, p3])
+        .finally(() => console.log(new Date() + "Promise finished!"))
+        .then(values => {
+            console.log("Result: " + values); // [3, "foo", "bar"] 
+        });
+    console.log(new Date() + "Promise started!")
+    //takes ~ 3 seconds (not 5)
+    </script>
+</html>

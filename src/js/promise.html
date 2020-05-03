@@ -1,0 +1,26 @@
+<html>
+    <head>
+        <title>Priomises and lies</title>
+    </head>
+    <script lang="JavaScript">
+        function executor(resolve, reject) {
+            setTimeout(() => {
+                var r = Math.random()
+                if (r > 0.5) resolve(r)
+                else reject("Too small!")
+            }, 2000)
+        }
+        var promiseObj = new Promise(executor)
+        console.log(new Date() + "Promise started!")
+        promiseObj
+            .finally(() => console.log(new Date() + "Promise finished!"))
+            .then(
+                res => Math.floor(res * 10),
+                err => Promise.reject(err + "\nwhen calling mul"))
+            .then(
+                res => res + 1,
+                err => Promise.reject(err + "\nwhen calling inc"))
+            .then(res => console.log("Final result: " + res))
+            .catch(err => console.log("Err: " + err))
+    </script>
+</html>

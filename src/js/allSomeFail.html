@@ -1,0 +1,21 @@
+<html>
+    <head>
+        <title>Priomises and lies</title>
+    </head>
+    <script lang="JavaScript">
+    var p1 = Promise.resolve(3);
+    var p2 = new Promise((resolve, reject) =>
+        setTimeout(() => resolve("foo"), 3000)
+    );
+    var p3 = new Promise((resolve, reject) =>
+        setTimeout(() => reject("bar"), 2000)
+    );
+
+    Promise.all([p1, p2, p3])
+        .finally(() => console.log(new Date() + "Promise finished!"))
+        .then(values => console.log("Result: " + values))
+        .catch(err => console.log("Error: " + err));
+    console.log(new Date() + "Promise started!")
+    // takes ~ 2 seconds (until p3 fails)
+    </script>
+</html>
