@@ -1,0 +1,43 @@
+<html>
+    <head>
+        <title>Continuations</title>
+    </head>
+    <script lang="JavaScript">
+    function test(x, y) {
+      if (y == 0) throw "division by 0"
+      else return x / y;
+    }
+
+    function main() {
+      try {
+        console.log("Result: " + test(3,0))
+      } catch(e) {
+        console.log("Error: " + e)
+      }
+      console.log("Done")
+    }
+
+    main()
+
+    function ktest(x, y, k, e) {
+      if (y == 0) return e("Division by 0")
+      else return k (x / y)
+    }
+
+    function k(v) {
+      console.log("Result: " + v)
+      console.log("Done")
+    }
+
+    function e(v) {
+      console.log("Error: " + v)
+      console.log("Done")
+    }
+
+    function kmain() {
+      ktest(3, 0, k, e)
+    }
+
+    kmain()
+    </script>
+</html>
